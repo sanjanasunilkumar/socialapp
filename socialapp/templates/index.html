@@ -1,0 +1,151 @@
+{%extends 'base.html'%}
+{%block body_block%}
+
+{%for p in posts%}
+<div class="row gx-5">
+    <div class="col-2"></div>
+    <div class="col-lg-8 mb-5">
+        <div class="card h-100 shadow border-0">
+            {%if p.image%}
+            <img class="card-img-top" src="{{p.image.url}}" alt="..." />
+            {%endif%}
+            <div>
+
+                <a href="{%url 'like' p.id%}" class="btn" type="submit"><i
+                        class="fa-solid fa-heart fa-2x"></i></a>
+
+                        
+
+                <button class="btn" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#comment{{ forloop.counter }}" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    <i class="fa-solid fa-comment fa-2x "></i>
+                </button>
+                <br>
+                &nbsp;&nbsp;{{p.like.all.count}} <span class="text-success">likes</span>
+
+                <div class="collapse" id="comment{{ forloop.counter }}">
+                    <div class="card card-body">
+                        <ul class="list-group">
+                            {%for cm in p.fetch_comments%}
+                            <li class="list-group-item">
+                                {{cm.comment}}<br> <span class="small fw-bold text-muted">{{p.user}}</span>
+                            </li>
+                            {%endfor%}
+                    </div>
+                </div>
+
+
+
+
+
+
+
+                <div class="card-body">
+                    <h6 class="card-title mb-1">{{p.post}}</h6>
+                    </a>
+                    <br>
+                    <button class="btn btn-outline-secondary " cols="40" type="button" data-bs-toggle="offcanvas"
+                        style="border-radius: 15px; width: 75%; margin-left: 70px;"
+                        data-bs-target="#offcanvasScrolling{{ forloop.counter }}"
+                        aria-controls="offcanvasScrolling">View Comments</button>
+
+                    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+                        id="offcanvasScrolling{{ forloop.counter }}" aria-labelledby="offcanvasScrollingLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Comments</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="card card-body">
+                            <ul class="list-group">
+                                <form action="{%url 'add-comment' p.id%}" method="post">
+                                    {%csrf_token%}
+                                    <input type="text" name="comment" id="" cols="10" rows="1"
+                                        style=" border-radius: 20px;" placeholder="Add your Comment"></input>
+                                    <button type="submit" class="btn btn-sm btn-outline-success"
+                                        style="border-radius: 15px; margin-top: -5px;">Add</button>
+                                </form>
+
+                                {%for cm in p.fetch_comments%}
+                                <li class="list-group-item">
+                                    {{cm.comment}} <br> <span class="small fw-bold text-muted">{{p.user}}{{p.created_date}}</span>
+                                </li>
+                                {%endfor%}
+
+                            </ul>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+
+            <div class="card-footer p-20 pt- bg-transparent border-top-0">
+                <div class="d-flex align-items-end justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                        <div class="small">
+                            <div class="fw-bold">{{p.user}}<span class="text-muted">{{p.created_date}}</span></div>
+                            <!-- <div class="text-muted">{{p.created_date}}</div> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-2"></div>
+</div>
+
+
+{%endfor%}
+
+<!-- Button trigger modal -->
+
+<div class="row">
+    <div class="col-11"></div>
+    <div class="col-1">
+        <button type="button" class="button btn btn-lg btn-primary rounded-circle me-5" data-bs-toggle="modal"
+            data-bs-target="#exampleModal" style=" position:fixed; top: 650px; ">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- Post preview-->
+                    <div class="post-preview">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {%csrf_token%}
+                            {{form.as_p}}
+                            <!-- Divider-->
+                            <hr class="my-4" />
+                            <input type="submit" value="Post" class="btn btn-success" style="border-radius: 20px;">
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
